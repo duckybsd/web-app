@@ -1,0 +1,14 @@
+@import url("https://fonts.googleapis.com/css?family=Ubuntu");
+@import url("https://fonts.googleapis.com/css?family=Ubuntu+Mono");
+
+.input-group-btn {
+    &:last-child {
+        & > .btn {
+            padding-top: 4px;
+            border-color: @input-border;
+            &.glyphicon {
+                margin-top: -3px;
+            }
+        }
+    }
+}
