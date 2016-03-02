@@ -1,2 +1,2 @@
-# chrome-app
-Chrome app for BitLox hardware wallet
+# web-app
+Web app for BitLox hardware wallet
