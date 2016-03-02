@@ -1,7 +1,7 @@
 # web-app
 Web app for BitLox hardware wallet
 
-Compiled with npm 3.3.12
+Compiled with node v5.1.0
 
 USB-HID plugin compiled from 
 
