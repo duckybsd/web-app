@@ -125,7 +125,7 @@
                             if (scope.expertMode) {
                                 Toast.success("Transaction submitted to network");
                             } else {
-                                Toast.success("Sent");
+                                Toast.success("Transaction success");
                             }
                         }, Toast.errorHandler)
 

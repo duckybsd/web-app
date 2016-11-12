@@ -24,7 +24,7 @@
             }
             var outputs = this.outputs = options.outputs;
             if (!outputs) {
-                // if no outputs in the otions, look for "to" and
+                // if no outputs in the options, look for "to" and
                 // "amount" and make an output object
                 var to = options.to;
                 if (!to) {
@@ -144,16 +144,19 @@
             if (input.confirmations < 1) {
                 return;
             }
+//             var amount = parseInt(input.value, 10);
+			console.debug("adding inputs");
             var amount = parseInt(input.value, 10);
             if (isNaN(amount)) {
                 throw ERR_INVALID_AMOUNT;
             }
-            var hash = Bitcoin.Util.bytesToBase64(Bitcoin.Util.hexToBytes(input.tx_hash));
+//             var hash = Bitcoin.Util.bytesToBase64(Bitcoin.Util.hexToBytes(input.txid));
+            var hash = Bitcoin.Util.bytesToBase64(Bitcoin.Util.hexToBytes(hexUtil.makeStringSmallEndian(input.txid)));
             var script = Bitcoin.Util.hexToBytes(input.script);
             var bcIn = new Bitcoin.TransactionIn({
                 outpoint: {
                     hash: hash,
-                    index: input.tx_output_n
+                    index: input.vout
                 },
                 script: script,
                 sequence: 4294967295

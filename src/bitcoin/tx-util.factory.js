@@ -12,7 +12,8 @@
     function txUtilFactory($q, $http) {
 
 
-        var baseUrl = 'https://bitcoin.toshi.io/api/v0/transactions';
+//         var baseUrl = 'https://bitcoin.toshi.io/api/v0/transactions';
+        var baseUrl = '/api';
 
         var txUtil = {
             getHex: getHex,
@@ -20,22 +21,45 @@
         };
 
         function getHex(bigEndianTxid) {
-            return $http.get(baseUrl + '/' + bigEndianTxid + '.hex').then(function(res) {
-                return res.data;
+        	console.debug("raw source txid " + bigEndianTxid);
+            return $http.get(baseUrl + '/rawtx/' + bigEndianTxid ).then(function(res) {
+            	console.debug("raw source tx " + res.data.rawtx);
+                return res.data.rawtx;
             });
         }
 
+
+// this shit has to be completely different.
+//         function submit(signedHex) {
+//             return $http.post(baseUrl, {
+//                 hex: signedHex
+//             }).then(function(res) {
+//                 if (res.data.error) {
+//                     if (res.data.error.indexOf("already spent") >= 0) {
+//                         return $q.reject(new Error("Some inputs already spent, please try transaction again in a few minutes"));
+//                     } else {
+//                         return $q.reject(new Error(res.data.error));
+//                     }
+//                 }
+//                 return res.data;
+//             });
+//         }
+
+// this shit has to be completely different.
         function submit(signedHex) {
-            return $http.post(baseUrl, {
-                hex: signedHex
+        	console.debug("raw signed tx " + signedHex);
+            return $http.post(baseUrl + '/tx/send', {
+                rawtx: signedHex
             }).then(function(res) {
                 if (res.data.error) {
+                	console.debug("tx error " + res.data.error);
                     if (res.data.error.indexOf("already spent") >= 0) {
                         return $q.reject(new Error("Some inputs already spent, please try transaction again in a few minutes"));
                     } else {
                         return $q.reject(new Error(res.data.error));
                     }
                 }
+                console.debug("tx good " + res.data);
                 return res.data;
             });
         }
