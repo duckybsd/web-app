@@ -100,9 +100,8 @@
                 <h3>Create/Restore Wallet</h3>
                 <wallet-create available-numbers="vm.availableWalletNumbers"
                                on-finish="vm.readWallets()"></wallet-create>
-<!-- 
                 <div ng-show="expertMode">
-                    <h3>Prep for Flashing</h3>
+                    <h3>ONLY USE IF DIRECTED TO</h3>
                     <button class="btn btn-danger"
                             ng-click="vm.confirmFlash = true"
                             ng-disabled="vm.flashing">FLASH</button>
@@ -110,7 +109,9 @@
                 <div ng-show="vm.confirmFlash">
                     <h3>Confirm Flash</h3>
                     <p>
-                        Confirm prepping the deice for firmare update. After
+                        USE ONLY IF DIRECTED BY SUPPORT
+                        <b>DESIGNED TO SWAP TO SERIAL FOR TAILS FLASHING ONLY</b>
+                        Confirm prepping the device for firmare update. After
                         sending this command, run the update tool for your
                         platform. If an alert about Network Interface is shown,
                         please just cancel the alert
@@ -119,7 +120,6 @@
                             ng-click="vm.prepForFlash()"
                             ng-disabled="vm.flashing">Confirm</button>
                 </div>
- -->
 
             </div>
             <div class="col-sm-9">
