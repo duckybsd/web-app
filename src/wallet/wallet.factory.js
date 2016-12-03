@@ -353,7 +353,7 @@
             // sign the transaction on the device
             return hidapi.signTransaction(tx)
                 .then(function(res) {
-                    // after signing, re4place the input scripts
+                    // after signing, replace the input scripts
                     // with the signed versions
                     console.debug("send: signed, replacing scripts");
                     tx.replaceScripts(res.payload.signedScripts);

@@ -51,6 +51,7 @@
             });
         };
 
+
         Toast.prototype.success = function(message) {
             this.show({
                 content: message,

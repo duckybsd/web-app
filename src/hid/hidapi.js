@@ -343,6 +343,7 @@
             var hidErr = Device.Failure.decodeHex(payload);
             data.payload = new Error(hidErr.error_message.toString('utf8'));
             data.payload.code = parseInt(hidErr.error_code, 10);
+            console.debug("got error returned");
             break;
         case "36": // device uuid return
             data.type = HidAPI.TYPE_UUID;
@@ -376,6 +377,7 @@
             data.payload = {
                 signedScripts: signedScripts
             };
+//         	console.debug("got sig returned");
             break;
         case "71": // message signing return
             data.type = HidAPI.TYPE_MESSAGE_SIGNATURE;
@@ -431,8 +433,17 @@
                         }
                         return hidapi.$timeout(doRead, readTimeout);
                     } else if (data.type === HidAPI.TYPE_ERROR) {
-                        hidapi.doingCommand = false;
-                        return hidapi.$q.reject(data.payload);
+//                     	console.debug("HidAPI.TYPE_ERROR");
+                        if (counter === counterMax) { // two minutes... ish
+                            return hidapi.close().then(function() {
+                                return hidapi.$q.reject(new Error("Command response timeout"));
+                            });
+                        }
+                        return hidapi.$timeout(doRead, readTimeout);
+
+
+//                         hidapi.doingCommand = false;
+//                         return hidapi.$q.reject(data.payload);
                     } else if (data.type === HidAPI.TYPE_PLEASE_ACK) {
                         return hidapi._doCommand(hidapi.commands.button_ack, expectedType);
                     } else if (expectedType) {
@@ -530,7 +541,7 @@
         // make a proto buffer for the data, generate a command and
         // send it off
         var newWalletMessage = new Device.NewWallet(protoData);
-        // if isRestore === true in the option, use the restor command
+        // if isRestore === true in the option, use the restore command
         // instead (everything else is the same)
         var cmdPrefix = (options.isRestore === true) ?
             this.commands.restoreWalletPrefix : this.commands.newWalletPrefix;

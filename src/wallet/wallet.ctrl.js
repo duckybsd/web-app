@@ -108,7 +108,7 @@
             vm.refreshingBalance = false;
             vm.openWallet = null;
             // read after a timeout, so angular does not hang and show
-            // garbage while the browser is locked form readin the device
+            // garbage while the browser is locked from reading the device
             $timeout(vm.readWallets.bind(vm), 100);
         }
 
