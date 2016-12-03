@@ -8,6 +8,8 @@
 
     appConfig.$inject = ['$compileProvider'];
 
+
+
     function appConfig ($compileProvider) {
         $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|bitcoin):/);
     }

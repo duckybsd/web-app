@@ -115,6 +115,7 @@
 
                 scope.submit = function() {
                     scope.submitting = true;
+                    console.debug("scope.signedHex to submit: " + scope.signedHex);
                     txUtil.submit(scope.signedHex)
 
                         .then(function() {

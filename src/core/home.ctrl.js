@@ -6,6 +6,8 @@
 
     HomeCtrl.$inject = ['$timeout', 'hidapi', 'Toast'];
 
+
+
     function HomeCtrl($timeout, hidapi, Toast) {
         var vm = this;
 

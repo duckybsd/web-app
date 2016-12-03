@@ -12,8 +12,9 @@
     function txUtilFactory($q, $http) {
 
 
-//         var baseUrl = 'https://bitcoin.toshi.io/api/v0/transactions';
-        var baseUrl = '/api';
+        var baseUrl = 'https://bitlox.io/api';
+
+//         var baseUrl = '/api';
 
         var txUtil = {
             getHex: getHex,

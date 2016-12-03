@@ -6,13 +6,13 @@ cd '/home/amnesia/Tor Browser'
 #read -s pass
 
 # update the apt repos
-sudo apt-get update
+# sudo apt-get update
 
 # download iceweasel
-wget -c http://ftp.br.debian.org/debian/pool/main/i/iceweasel/iceweasel_38.5.0esr-1~deb8u2_i386.deb
+wget -c http://security.debian.org/debian-security/pool/updates/main/i/iceweasel/iceweasel_38.8.0esr-1~deb8u1_i386.deb
 
 # install it and then fix apt
-sudo dpkg -i iceweasel_38.5.0esr-1~deb8u2_i386.deb
+sudo dpkg -i iceweasel_38.8.0esr-1~deb8u1_i386.deb
 sudo apt-get install -fy
 
 # add udev rules
@@ -25,5 +25,5 @@ sudo chmod 644 /etc/udev/rules.d/90-bitlox.rules
 sudo /etc/init.d/udev restart
 
 # download the firefox plugin
-wget -c http://bitlox2twvzwbzpk.onion/bitlox_hardware_wallet/tails/nphidapiBrowserPlugin.xpi
-
+# wget -c http://bitlox2twvzwbzpk.onion/bitlox_hardware_wallet/tails/nphidapiBrowserPlugin.xpi
+echo 'Finished install. Please open iceweasel (applications > Internet > iceweasel) and continue.'

@@ -12,10 +12,9 @@
 
     function addressInfoFactory($q, $http, hexUtil) {
 
+        var baseUrl = 'https://bitlox.io/api';
+//         var baseUrl = '/api';
 
-//         var baseUrl = 'https://bitcoin.toshi.io/api/v0/addresses';
-//         var baseUrl = 'http://bitlox.io/api';
-        var baseUrl = '/api';
         var addressInfo = {};
 
         addressInfo.getReceived = function(address) {
