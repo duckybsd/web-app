@@ -12,8 +12,8 @@
 
     function addressInfoFactory($q, $http, hexUtil) {
 
-        var baseUrl = 'https://bitlox.io/api';
-//         var baseUrl = '/api';
+//         var baseUrl = 'https://bitlox.io/api';
+        var baseUrl = '/api';
 
         var addressInfo = {};
 

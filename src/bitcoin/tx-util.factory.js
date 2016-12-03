@@ -12,9 +12,9 @@
     function txUtilFactory($q, $http) {
 
 
-        var baseUrl = 'https://bitlox.io/api';
+//         var baseUrl = 'https://bitlox.io/api';
 
-//         var baseUrl = '/api';
+        var baseUrl = '/api';
 
         var txUtil = {
             getHex: getHex,

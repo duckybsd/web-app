@@ -6,7 +6,8 @@
 
     txInfoLink.$inject = [];
 
-	var baseUrlroot = 'https://bitlox.io';
+// 	var baseUrlroot = 'https://bitlox.io';
+	var baseUrlroot = '';
 
     function txInfoLink() {
         return {
