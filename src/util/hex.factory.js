@@ -7,6 +7,9 @@
     HexFactory.$inject = [];
 
     function HexFactory() {
+//      var baseUrl = 'https://bitlox.io/api';
+// 		var baseUrlroot = 'https://bitlox.io';
+		
         return {
             // string to hex methods
             utf8ToHex: utf8ToHex,
@@ -25,6 +28,8 @@
             // make a big endian string small endian
             makeStringSmallEndian: makeStringSmallEndian
         };
+
+		
 
         function strToPaddedHex(str, targetBytes, padByte) {
             return padBytes(utf8ToHex(str), targetBytes, padByte);

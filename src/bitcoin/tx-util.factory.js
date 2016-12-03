@@ -7,13 +7,13 @@
     txUtilFactory.$inject = [
         '$q',
         '$http',
+        'hexUtil',
     ];
 
     function txUtilFactory($q, $http) {
 
-
+// Moved vars to hex.factory.js
         var baseUrl = 'https://bitlox.io/api';
-
 //         var baseUrl = '/api';
 
         var txUtil = {

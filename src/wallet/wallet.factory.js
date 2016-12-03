@@ -527,6 +527,7 @@
             tx.totalAmount = tx.valueOut * 100000000;
             var ownAddresses = 0;
             var addrCount = 0;
+            var sentAmount = 0;
             tx.vout.forEach(function(out) {
                 out.scriptPubKey.addresses.forEach(function(addr) {
                     addrCount += 1;
@@ -535,19 +536,40 @@
                         ownAddresses += 1;
                     } else if (wallet.addresses.change.hasOwnProperty(addr)) {
                         ownAddresses += 1;
+                        console.debug("-------------------");
+                        console.debug("S txid " + tx.txid);
                         console.debug("S out.value " + out.value);
-                        console.debug("S stringToSatoshis(out.value) " + stringToSatoshis(out.value));
                         var stsS = stringToSatoshis(out.value);
+                        console.debug("S stringToSatoshis(out.value) " + stsS);
+                        tx.totalAmount = 0;
+						tx.totalAmount = tx.valueOut * 100000000;
+                        console.debug("S tx.totalAmount " + tx.totalAmount);
+                        sentAmount = tx.totalAmount - stsS;
+                        stsS = 0;
+                       	console.debug("S sentAmount " + sentAmount);
+                        tx.amount = sentAmount;
+                        sentAmount = 0;
+                        tx.fees = tx.fees * 100000000;
+                        console.debug("S tx.fees " + tx.fees);
+//                         tx.amount = stsS;
+						
+//                         ownAddresses += 1;
+//                         var stsS = stringToSatoshis(out.value);
+//                         tx.amount -= stsS;
+
+
 						var epochDate = 0;
 						if (tx.confirmations > 0) {
 							epochDate = tx.blocktime*1000;
+							console.debug("epochDate raw >0 conf " + epochDate);
 						}else{
 							epochDate = tx.time*1000;
+							console.debug("epochDate raw 0 conf " + epochDate);
 						}
 						tx.blocktime = moment(epochDate).format("YYYY-MM-DD HH:mm");
-                        tx.amount = stsS;
-                        tx.fees = tx.fees * 100000000;
-                        console.debug("S tx.fees " + tx.fees);
+						console.debug("tx.blocktime formatted " + tx.blocktime);
+
+                        console.debug("-------------------");
                     }
                 });
             });

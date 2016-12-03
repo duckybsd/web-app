@@ -4,8 +4,11 @@
     angular.module('app.wallet')
         .directive('txInfoLink', txInfoLink);
 
-    txInfoLink.$inject = [];
-
+    txInfoLink.$inject = [        
+    	'hexUtil',
+	];
+	
+// Moved vars to hex.factory.js
 	var baseUrlroot = 'https://bitlox.io';
 // 	var baseUrlroot = '';
 

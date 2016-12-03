@@ -343,7 +343,7 @@
             var hidErr = Device.Failure.decodeHex(payload);
             data.payload = new Error(hidErr.error_message.toString('utf8'));
             data.payload.code = parseInt(hidErr.error_code, 10);
-            console.debug("got error returned");
+//             console.debug("got error returned");
             break;
         case "36": // device uuid return
             data.type = HidAPI.TYPE_UUID;
@@ -433,17 +433,17 @@
                         }
                         return hidapi.$timeout(doRead, readTimeout);
                     } else if (data.type === HidAPI.TYPE_ERROR) {
-//                     	console.debug("HidAPI.TYPE_ERROR");
-                        if (counter === counterMax) { // two minutes... ish
-                            return hidapi.close().then(function() {
-                                return hidapi.$q.reject(new Error("Command response timeout"));
-                            });
-                        }
-                        return hidapi.$timeout(doRead, readTimeout);
-
-
-//                         hidapi.doingCommand = false;
-//                         return hidapi.$q.reject(data.payload);
+						if (expectedType === hidapi.TYPE_SIGNATURE_RETURN) {
+							if (counter === counterMax) { // two minutes... ish
+								return hidapi.close().then(function() {
+									return hidapi.$q.reject(new Error("Command response timeout"));
+								});
+							}
+							return hidapi.$timeout(doRead, readTimeout);
+						} else {	
+							hidapi.doingCommand = false;
+							return hidapi.$q.reject(data.payload);
+						}
                     } else if (data.type === HidAPI.TYPE_PLEASE_ACK) {
                         return hidapi._doCommand(hidapi.commands.button_ack, expectedType);
                     } else if (expectedType) {
@@ -587,6 +587,7 @@
                 transaction_data: dataBuf
             });
             var cmd = hidapi.makeCommand(hidapi.commands.signTxPrefix, txMessage);
+            console.debug("hidapi.TYPE_SIGNATURE_RETURN ", hidapi.TYPE_SIGNATURE_RETURN);
             hidapi._doCommand(cmd, hidapi.TYPE_SIGNATURE_RETURN).then(deferred.resolve, deferred.reject);
         });
         return deferred.promise;
