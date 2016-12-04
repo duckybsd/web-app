@@ -13,8 +13,8 @@
     function addressInfoFactory($q, $http, hexUtil) {
 
 // Moved vars to hex.factory.js
-        var baseUrl = 'https://bitlox.io/api';
-//         var baseUrl = '/api';
+//         var baseUrl = 'https://bitlox.io/api';
+        var baseUrl = '/api';
 
         var addressInfo = {};
 

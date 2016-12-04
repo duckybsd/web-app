@@ -487,7 +487,285 @@
 
 
 
+        Wallet.prototype.txMap = function(tx) {
+            console.debug("*************************************");
+        	console.debug("ROOT txid " + tx.txid);
+
+			var epochDate = 0;
+			if (tx.confirmations > 0) {
+				epochDate = tx.blocktime*1000;
+				console.debug("epochDate raw >0 conf " + epochDate);
+			} else {
+				epochDate = tx.time*1000;
+				console.debug("epochDate raw 0 conf " + epochDate);
+			}
+			tx.blocktime = moment(epochDate).format("YYYY-MM-DD HH:mm");
+			console.debug("tx.blocktime formatted " + tx.blocktime);
+
+			tx.fees = tx.fees * 100000000;
+			console.debug("tx.fees " + tx.fees);
+
+            tx.type = 'send';
+            var wallet = this;
+            tx.amount = tx.valueOut * 100000000;
+            tx.totalAmount = tx.amount;
+            var ownAddresses = 0;
+            var addrCount = 0;
+            tx.vout.forEach(function(out) {
+                out.scriptPubKey.addresses.forEach(function(addr) {
+                    addrCount += 1;
+                    if (wallet.addresses.receive.hasOwnProperty(addr)) {
+                        tx.type = 'receive';
+                        ownAddresses += 1;
+                    } else if (wallet.addresses.change.hasOwnProperty(addr)) {
+                        ownAddresses += 1;
+                        var changeAmount = stringToSatoshis(out.value);
+                        console.debug("changeAmount " + changeAmount);
+                        tx.amount -= changeAmount;
+                    }
+                });
+            });
+            if (ownAddresses === addrCount) {
+                tx.type = 'transfer';
+            }
+            if (tx.type === 'receive') {
+                tx.vout.forEach(function(out) {
+                    out.scriptPubKey.addresses.forEach(function(addr) {
+                        if (!wallet.addresses.receive.hasOwnProperty(addr) &&
+                            !wallet.addresses.change.hasOwnProperty(addr)) {
+                            var receiveAmount = stringToSatoshis(out.value);
+                            console.debug("receiveAmount " + receiveAmount);
+                            tx.amount -= receiveAmount;
+                        }
+                    });
+                });
+            }
+
+            return tx;
+        };
+
 //         Wallet.prototype.txMap = function(tx) {
+//             console.debug("*************************************");
+//         	console.debug("ROOT txid " + tx.txid);
+//             tx.type = 'send';
+//             var wallet = this;
+//             tx.totalAmount = tx.valueOut * 100000000;
+//             var ownAddresses = 0;
+//             var addrCount = 0;
+//             var sentAmount = 0;
+//             
+// 			var epochDate = 0;
+// 			if (tx.confirmations > 0) {
+// 				epochDate = tx.blocktime*1000;
+// 				console.debug("epochDate raw >0 conf " + epochDate);
+// 			} else {
+// 				epochDate = tx.time*1000;
+// 				console.debug("epochDate raw 0 conf " + epochDate);
+// 			}
+// 			tx.blocktime = moment(epochDate).format("YYYY-MM-DD HH:mm");
+// 			console.debug("tx.blocktime formatted " + tx.blocktime);
+// 
+// 			tx.totalAmount = 0;
+// 			tx.totalAmount = tx.valueOut * 100000000;
+// 			console.debug("tx.totalAmount " + tx.totalAmount);
+// 
+// 			sentAmount = tx.totalAmount;
+// 			var totalChange = 0;
+// 			var totalReceived = 0;
+// 			var totalSent = 0;
+// 
+// 			tx.amount = 0;
+// 
+// 			tx.fees = tx.fees * 100000000;
+// 			console.debug("tx.fees " + tx.fees);
+//             
+//             tx.vout.forEach(function(out) {
+//                 out.scriptPubKey.addresses.forEach(function(addr) {
+//                     addrCount += 1;
+//                     if (wallet.addresses.receive.hasOwnProperty(addr)) {
+//                     	console.debug("RX transaction");
+//                         tx.type = 'receive';
+//                         ownAddresses += 1;
+//                     }
+//                 });
+//             });
+//             
+//             tx.vout.forEach(function(out) {
+//             	console.debug("checkpoint 1");
+//                 out.scriptPubKey.addresses.forEach(function(addr) {
+//                 	console.debug("checkpoint 2");
+//                     addrCount += 1;
+//                     if (wallet.addresses.receive.hasOwnProperty(addr)) {
+//                     	console.debug("checkpoint 3");
+//                         tx.type = 'receive';
+//                         ownAddresses += 1;
+//                     } else if (wallet.addresses.change.hasOwnProperty(addr)) {
+//                         ownAddresses += 1;
+//                         console.debug("-----Change vout------");
+//                         console.debug("C txid " + tx.txid);
+//                         console.debug("C out.value " + out.value);
+//                         var currentOutValueChange = stringToSatoshis(out.value);
+//                         console.debug("C stringToSatoshis(out.value) " + currentOutValueChange);
+//                         totalChange += currentOutValueChange;
+//                        	console.debug("Current totalChange " + totalChange);
+// 						
+//                         console.debug("-------------------");
+//                     } else if (!wallet.addresses.change.hasOwnProperty(addr) && !wallet.addresses.receive.hasOwnProperty(addr) ) {
+//                         console.debug("----Sending vout-----");
+//                         console.debug("S txid " + tx.txid);
+//                         console.debug("S out.value " + out.value);
+//                         var currentOutValueSending = stringToSatoshis(out.value);
+//                         console.debug("S stringToSatoshis(out.value) " + currentOutValueSending);
+//                         totalSent += currentOutValueSending;
+// 						
+//                         console.debug("-------------------");
+//                     }
+//                 });
+//             });
+//             console.debug("checkpoint 4");
+//             if (ownAddresses === addrCount) {
+//                 tx.type = 'transfer';
+//                 console.debug("T tx.fees " + tx.fees);
+//             }
+//             if (tx.type === 'receive') {
+//                 tx.vout.forEach(function(out) {
+//                     out.scriptPubKey.addresses.forEach(function(addr) {
+//                         console.debug("-----Receive vout------");
+//                     	console.debug("R txid " + tx.txid);
+//                     	console.debug("R addr " + addr);
+//                         if (wallet.addresses.receive.hasOwnProperty(addr)) {
+// 							console.debug("R out.value " + out.value);
+// 							console.debug("R stringToSatoshis(out.value) " + stringToSatoshis(out.value));
+//                         	var stsR = 0;
+//                         	stsR = stringToSatoshis(out.value);
+//                             tx.amount += stsR;
+//                             console.debug("R tx.amount " + tx.amount);
+//                         }
+//                     });
+//                 });
+//             }
+//             tx.amount = sentAmount;
+// 
+//             return tx;
+//         };
+
+//         Wallet.prototype.txMap = function(tx) {
+//             console.debug("*************************************");
+//         	console.debug("ROOT txid " + tx.txid);
+//             tx.type = 'send';
+//             var wallet = this;
+//             tx.totalAmount = tx.valueOut * 100000000;
+//             var ownAddresses = 0;
+//             var addrCount = 0;
+//             var sentAmount = 0;
+//             
+// 			var epochDate = 0;
+// 			if (tx.confirmations > 0) {
+// 				epochDate = tx.blocktime*1000;
+// 				console.debug("epochDate raw >0 conf " + epochDate);
+// 			} else {
+// 				epochDate = tx.time*1000;
+// 				console.debug("epochDate raw 0 conf " + epochDate);
+// 			}
+// 			tx.blocktime = moment(epochDate).format("YYYY-MM-DD HH:mm");
+// 			console.debug("tx.blocktime formatted " + tx.blocktime);
+// 
+// 			tx.totalAmount = 0;
+// 			tx.totalAmount = tx.valueOut * 100000000;
+// 			console.debug("tx.totalAmount " + tx.totalAmount);
+// 
+// 			sentAmount = tx.totalAmount;
+// 			var totalChange = 0;
+// 			var totalReceived = 0;
+// 			var totalSent = 0;
+// 
+// 			tx.amount = 0;
+// 
+// 			tx.fees = tx.fees * 100000000;
+// 			console.debug("tx.fees " + tx.fees);
+//             
+//             tx.vout.forEach(function(out) {
+//                 out.scriptPubKey.addresses.forEach(function(addr) {
+//                     addrCount += 1;
+//                     if (wallet.addresses.receive.hasOwnProperty(addr)) {
+//                     	console.debug("RX transaction");
+//                         tx.type = 'receive';
+//                         ownAddresses += 1;
+//                     }
+//                 });
+//             });
+//             
+//             tx.vout.forEach(function(out) {
+//             	console.debug("checkpoint 1");
+//                 out.scriptPubKey.addresses.forEach(function(addr) {
+//                 	console.debug("checkpoint 2");
+//                     addrCount += 1;
+//                     if (wallet.addresses.receive.hasOwnProperty(addr)) {
+//                     	console.debug("checkpoint 3");
+//                         tx.type = 'receive';
+//                         ownAddresses += 1;
+//                     } else if (wallet.addresses.change.hasOwnProperty(addr)) {
+//                         ownAddresses += 1;
+//                         console.debug("-----Change vout------");
+//                         console.debug("C txid " + tx.txid);
+//                         console.debug("C out.value " + out.value);
+//                         var currentOutValueChange = stringToSatoshis(out.value);
+//                         console.debug("C stringToSatoshis(out.value) " + currentOutValueChange);
+//                         totalChange += currentOutValueChange;
+//                        	console.debug("Current totalChange " + totalChange);
+// 						
+//                         console.debug("-------------------");
+//                     } else if (!wallet.addresses.change.hasOwnProperty(addr) && !wallet.addresses.receive.hasOwnProperty(addr) ) {
+//                         console.debug("----Sending vout-----");
+//                         console.debug("S txid " + tx.txid);
+//                         console.debug("S out.value " + out.value);
+//                         var currentOutValueSending = stringToSatoshis(out.value);
+//                         console.debug("S stringToSatoshis(out.value) " + currentOutValueSending);
+//                         totalSent += currentOutValueSending;
+// 						
+//                         console.debug("-------------------");
+//                     }
+//                 });
+//             });
+//             console.debug("checkpoint 4");
+//             if (ownAddresses === addrCount) {
+//                 tx.type = 'transfer';
+//                 console.debug("T tx.fees " + tx.fees);
+//             }
+//             if (tx.type === 'receive') {
+//                 tx.vout.forEach(function(out) {
+//                     out.scriptPubKey.addresses.forEach(function(addr) {
+//                         console.debug("-----Receive vout------");
+//                     	console.debug("R txid " + tx.txid);
+//                     	console.debug("R addr " + addr);
+//                         if (wallet.addresses.receive.hasOwnProperty(addr)) {
+// 							console.debug("R out.value " + out.value);
+// 							console.debug("R stringToSatoshis(out.value) " + stringToSatoshis(out.value));
+//                         	var stsR = 0;
+//                         	stsR = stringToSatoshis(out.value);
+//                             tx.amount += stsR;
+//                             console.debug("R tx.amount " + tx.amount);
+//                         }
+//                     });
+//                 });
+//             }
+//             tx.amount = sentAmount;
+// 
+//             return tx;
+//         };
+
+//         Wallet.prototype.txMap = function(tx) {
+// 			var epochDate = 0;
+// 			if (tx.confirmations > 0) {
+// 				epochDate = tx.blocktime*1000;
+// 				console.debug("epochDate raw >0 conf " + epochDate);
+// 			} else {
+// 				epochDate = tx.time*1000;
+// 				console.debug("epochDate raw 0 conf " + epochDate);
+// 			}
+// 			tx.blocktime = moment(epochDate).format("YYYY-MM-DD HH:mm");
+// 			console.debug("tx.blocktime formatted " + tx.blocktime);
+// 
 //             tx.type = 'send';
 //             var wallet = this;
 //             tx.totalAmount = tx.amount;
@@ -521,86 +799,7 @@
 //             return tx;
 //         };
 
-        Wallet.prototype.txMap = function(tx) {
-            tx.type = 'send';
-            var wallet = this;
-            tx.totalAmount = tx.valueOut * 100000000;
-            var ownAddresses = 0;
-            var addrCount = 0;
-            var sentAmount = 0;
-            tx.vout.forEach(function(out) {
-                out.scriptPubKey.addresses.forEach(function(addr) {
-                    addrCount += 1;
-                    if (wallet.addresses.receive.hasOwnProperty(addr)) {
-                        tx.type = 'receive';
-                        ownAddresses += 1;
-                    } else if (wallet.addresses.change.hasOwnProperty(addr)) {
-                        ownAddresses += 1;
-                        console.debug("-------------------");
-                        console.debug("S txid " + tx.txid);
-                        console.debug("S out.value " + out.value);
-                        var stsS = stringToSatoshis(out.value);
-                        console.debug("S stringToSatoshis(out.value) " + stsS);
-                        tx.totalAmount = 0;
-						tx.totalAmount = tx.valueOut * 100000000;
-                        console.debug("S tx.totalAmount " + tx.totalAmount);
-                        sentAmount = tx.totalAmount - stsS;
-                        stsS = 0;
-                       	console.debug("S sentAmount " + sentAmount);
-                        tx.amount = sentAmount;
-                        sentAmount = 0;
-                        tx.fees = tx.fees * 100000000;
-                        console.debug("S tx.fees " + tx.fees);
-//                         tx.amount = stsS;
-						
-//                         ownAddresses += 1;
-//                         var stsS = stringToSatoshis(out.value);
-//                         tx.amount -= stsS;
 
-
-						var epochDate = 0;
-						if (tx.confirmations > 0) {
-							epochDate = tx.blocktime*1000;
-							console.debug("epochDate raw >0 conf " + epochDate);
-						}else{
-							epochDate = tx.time*1000;
-							console.debug("epochDate raw 0 conf " + epochDate);
-						}
-						tx.blocktime = moment(epochDate).format("YYYY-MM-DD HH:mm");
-						console.debug("tx.blocktime formatted " + tx.blocktime);
-
-                        console.debug("-------------------");
-                    }
-                });
-            });
-            if (ownAddresses === addrCount) {
-                tx.type = 'transfer';
-                console.debug("T tx.fees " + tx.fees);
-            }
-            if (tx.type === 'receive') {
-                tx.vout.forEach(function(out) {
-                    out.scriptPubKey.addresses.forEach(function(addr) {
-                    	console.debug("R addr " + addr);
-                        if (wallet.addresses.receive.hasOwnProperty(addr)) {
-							console.debug("R out.value " + out.value);
-							console.debug("R stringToSatoshis(out.value) " + stringToSatoshis(out.value));
-                        	var stsR = 0;
-                        	stsR = stringToSatoshis(out.value);
-                        	var epochDate2 = 0;
-							if (tx.confirmations > 0) {
-								epochDate2 = tx.blocktime*1000;
-							}else{
-								epochDate2 = tx.time*1000;
-							}
-							tx.blocktime = moment(epochDate2).format("YYYY-MM-DD HH:mm");
-                            tx.amount = stsR;
-                            console.debug("R tx.amount " + tx.amount);
-                        }
-                    });
-                });
-            }
-            return tx;
-        };
 
         return Wallet;
 

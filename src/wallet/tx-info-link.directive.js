@@ -9,8 +9,8 @@
 	];
 	
 // Moved vars to hex.factory.js
-	var baseUrlroot = 'https://bitlox.io';
-// 	var baseUrlroot = '';
+// 	var baseUrlroot = 'https://bitlox.io';
+	var baseUrlroot = '';
 
     function txInfoLink() {
         return {
