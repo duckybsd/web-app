@@ -709,7 +709,7 @@
     };
 
     HidAPI.prototype.setChangeAddress = function(chainIndex) {   
-    	console.debug("in setChangeAddress");
+//     	console.debug("in setChangeAddress");
         var Device = this.protoBuilder();
         var otpMessage = new Device.SetChangeAddressIndex({
             address_handle_index: chainIndex,
