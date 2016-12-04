@@ -8,14 +8,12 @@
     	'hexUtil',
 	];
 	
-// Moved vars to hex.factory.js
 // 	var baseUrlroot = 'https://bitlox.io';
 	var baseUrlroot = '';
 
     function txInfoLink() {
         return {
             restrict: 'E',
-//             template: '<a ng-href="https://blockchain.info/search/{{txid}}" target="_blank">{{display}}</a>',
             template: '<a ng-href="'+ baseUrlroot +'/tx/{{txid}}" target="_blank">{{display}}</a>',
             link: function(scope, elem, attrs) {
                 var txid = scope.txid = attrs.txid;

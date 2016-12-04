@@ -2,6 +2,6 @@
     'use strict';
 
     angular.module('app.wallet')
-        .constant('MAX_WALLETS', 50);
+        .constant('MAX_WALLETS', 49);
 
 })(window, window.angular);

@@ -37,17 +37,10 @@
         };
 
         addressInfo.getUnspent = function(address) {
-//             return $http.get(baseUrl + '/' + address + '/unspent_outputs').then(function(res) {
             return $http.get(baseUrl + '/addr/' + address + '/utxo').then(function(res) {
                 var outs = res.data;
                 outs.forEach(function(out) {
                     // make this data just loke blockchain.info's
-//                     var hash = out.tx_hash_big_endian = out.transaction_hash;
-//                     out.tx_hash = hexUtil.makeStringSmallEndian(hash);
-//                     out.value = out.amount;
-//                     out.script = out.script_hex;
-//                     out.tx_output_n = out.output_index;
-//                     var hash = out.tx_hash_big_endian = out.txid;
                     var hash = out.tx_hash_big_endian = out.txid;
                     out.tx_hash = hexUtil.makeStringSmallEndian(hash);
                     out.value = out.amount * 100000000;
@@ -63,20 +56,6 @@
             });
         };
 
-//         addressInfo.getTransactions = function(address) {
-// //             return $http.get(baseUrl + '/' + address + '/transactions').then(function(res) {
-//             return $http.get(baseUrl + '/txs/?address=' + address ).then(function(res) {
-//                 var txs = res.data.transactions;
-//                 txs = txs.concat(res.data.unconfirmed_transactions);
-//                 return txs;
-//             }, function(err) {
-//                 if (err.status === 404) {
-//                     return [];
-//                 } else {
-//                     return $q.reject(err.data);
-//                 }
-//             });
-//         };
         addressInfo.getTransactions = function(address) {
 //             return $http.get(baseUrl + '/' + address + '/transactions').then(function(res) {
             return $http.get(baseUrl + '/txs/?address=' + address ).then(function(res) {

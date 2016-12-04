@@ -12,7 +12,6 @@
 
     function txUtilFactory($q, $http) {
 
-// Moved vars to hex.factory.js
 //         var baseUrl = 'https://bitlox.io/api';
         var baseUrl = '/api';
 
@@ -30,23 +29,6 @@
         }
 
 
-// this shit has to be completely different.
-//         function submit(signedHex) {
-//             return $http.post(baseUrl, {
-//                 hex: signedHex
-//             }).then(function(res) {
-//                 if (res.data.error) {
-//                     if (res.data.error.indexOf("already spent") >= 0) {
-//                         return $q.reject(new Error("Some inputs already spent, please try transaction again in a few minutes"));
-//                     } else {
-//                         return $q.reject(new Error(res.data.error));
-//                     }
-//                 }
-//                 return res.data;
-//             });
-//         }
-
-// this shit has to be completely different.
         function submit(signedHex) {
         	console.debug("raw signed tx ", signedHex);
             return $http.post(baseUrl + '/tx/send', {

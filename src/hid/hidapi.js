@@ -21,6 +21,7 @@
         this.PRODUCT_ID = PRODUCT_ID;
         this.RECEIVE_CHAIN = RECEIVE_CHAIN;
         this.CHANGE_CHAIN = CHANGE_CHAIN;
+
         this.Toast = Toast;
         this._plugin = null;
         this.version = null;
@@ -35,11 +36,22 @@
         this.commands = hidCommands;
 
         this.hexUtil = hexUtil;
+
         this.messageUtil = messageUtil;
         this.getTxHex = txUtil.getHex;
 
         this.$scope = $rootScope.$new();
         this.$scope.status = HidAPI.STATUS_DISCONNECTED;
+
+
+
+
+
+
+
+
+
+
     }
 
     HidAPI.TYPE_INITIALIZE         = HidAPI.prototype.TYPE_INITIALIZE = 'initialize';
@@ -59,6 +71,7 @@
 
     HidAPI.STATUS_DISCONNECTED     = HidAPI.prototype.STATUS_DISCONNECTED = "disconnected";
     HidAPI.STATUS_CONNECTED        = HidAPI.prototype.STATUS_CONNECTED = "connected";
+
     HidAPI.STATUS_READING          = HidAPI.prototype.STATUS_READING = "reading";
     HidAPI.STATUS_WRITING          = HidAPI.prototype.STATUS_WRITING = "writing";
 
@@ -73,7 +86,7 @@
         return this._plugin;
     };
 
-    // Get the device. If we alreay have it, just return it.
+    // Get the device. If we already have it, just return it.
     // Otherwise, do a hidraw scan and find, then open, the device
     HidAPI.prototype.device = function() {
         var hidapi = this;
@@ -271,6 +284,15 @@
             if (magicRegexpEdge.test(serialData)) {
                 return hidapi.read(serialData, wait);
             }
+//             
+// // 			bonehead forgot to put in the edge split case
+// 			if (((serialData[60] !== 2) || (serialData[61] !== 3)) && ((serialData[62] === 2) && (serialData[63] === 3))) {
+// 				//                     console.log('EDGE:' + sD);
+// 				serialData = serialData + hidapi.read(serialData, wait);
+// 				//                     console.log('EDGE WRAP:' + sD);
+// 			}
+            
+            
             if (magicRegexp.test(serialData)) {
                 // find the position of the magic string
                 var headerPosition = serialData.search(magic);
@@ -687,7 +709,7 @@
     };
 
     HidAPI.prototype.setChangeAddress = function(chainIndex) {   
-//     	console.debug("in setChangeAddress");
+    	console.debug("in setChangeAddress");
         var Device = this.protoBuilder();
         var otpMessage = new Device.SetChangeAddressIndex({
             address_handle_index: chainIndex,
@@ -702,8 +724,6 @@
             }
         });
     };
-
-
 
     HidAPI.prototype.flash = function() {
         var hidapi = this;

@@ -67,7 +67,6 @@
                 };
 
                 scope.doSend = function(forceSmallChange) {
-                	console.debug("in scope.doSend");
                     scope.sending = true;
                     return scope.wallet.send(scope.outputs, scope.fee, forceSmallChange)
 
@@ -116,7 +115,6 @@
 
                 scope.submit = function() {
                     scope.submitting = true;
-//                     console.debug("scope.signedHex to submit: " + scope.signedHex);
                     txUtil.submit(scope.signedHex)
 
                         .then(function() {
